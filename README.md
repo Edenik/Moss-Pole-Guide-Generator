@@ -1,5 +1,7 @@
 # Moss-Pole-Guide-Generator
 
+## Output
+
 <img src="https://raw.githubusercontent.com/Edenik/Moss-Pole-Guide-Generator/refs/heads/main/output/moss-pole-guide.svg?sanitize=true">
 
 ## Getting Started
@@ -16,7 +18,7 @@ pnpm dev
 bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:5500](http://localhost:5500) with your browser to see the result.
 
 ## TODO -
 
