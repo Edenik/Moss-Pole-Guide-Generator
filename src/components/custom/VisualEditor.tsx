@@ -58,6 +58,15 @@ const VisualEditor = ({
         return "";
     };
 
+    const validateNumberInRange = (value: string, min: number, max: number): string => {
+        if (value === "") return ""; // Allow empty value
+        const num = Number(value);
+        if (isNaN(num)) return "Must be a number";
+        if (num < min) return `Minimum is ${min}`;
+        if (num > max) return `Maximum is ${max}`;
+        return "";
+    };
+
     const validateColor = (value: string) => {
         const regex = /^#[0-9A-Fa-f]{6}$/;
         if (!regex.test(value)) return "Invalid hex color";
@@ -74,11 +83,15 @@ const VisualEditor = ({
             case 'backgroundColor':
             case 'textColor':
                 return validateColor(value);
+            case 'algaePercentage':
+                return validateNumberInRange(value, 1, 100);
+            case 'polesPerRow':
+                return validateNumberInRange(value, 1, 4);
             default:
                 if (isNaN((value as any) as number)) {
                     return value.trim() ? "" : "Required";
                 }
-                return value
+                return value;
         }
     };
 
@@ -89,8 +102,8 @@ const VisualEditor = ({
         });
     };
 
-    const handleVisualConfigChange = (field: string, value: string) => {
-        const error = validateField(field, value);
+    const handleVisualConfigChange = (field: string, value: string | number) => {
+        const error = validateField(field, value as string);
         setValidationErrors(prev => ({ ...prev, [field]: error }));
         onChange({
             ...data,
@@ -162,14 +175,44 @@ const VisualEditor = ({
                                 error={validationErrors['textColor']}
                             />
                             <div className="space-y-1">
-                                <Label>Algae %</Label>
+                                <Label>Algae % (1-100)</Label>
                                 <Input
-                                    type="number"
-                                    min="0"
-                                    max="100"
-                                    value={data.config.visual.algaePercentage}
-                                    onChange={(e) => handleVisualConfigChange('algaePercentage', e.target.value)}
+                                    type="text"
+                                    value={data.config.visual.algaePercentage ?? ""}
+                                    onChange={(e) => {
+                                        const value = e.target.value;
+                                        if (value === "") {
+                                            handleVisualConfigChange('algaePercentage', null as any); // Default value
+                                            return;
+                                        }
+                                        const num = parseInt(value);
+                                        handleVisualConfigChange('algaePercentage', num);
+                                    }}
+                                    className={validationErrors['algaePercentage'] ? "border-red-500" : ""}
                                 />
+                                {validationErrors['algaePercentage'] && (
+                                    <p className="text-xs text-red-500">{validationErrors['algaePercentage']}</p>
+                                )}
+                            </div>
+                            <div className="space-y-1">
+                                <Label>Poles per Row (1-4)</Label>
+                                <Input
+                                    type="text"
+                                    value={data.config.visual.polesPerRow ?? ""}
+                                    onChange={(e) => {
+                                        const value = e.target.value;
+                                        if (value === "") {
+                                            handleVisualConfigChange('polesPerRow', null as any); // Default value
+                                            return;
+                                        }
+                                        const num = parseInt(value);
+                                        handleVisualConfigChange('polesPerRow', num);
+                                    }}
+                                    className={validationErrors['polesPerRow'] ? "border-red-500" : ""}
+                                />
+                                {validationErrors['polesPerRow'] && (
+                                    <p className="text-xs text-red-500">{validationErrors['polesPerRow']}</p>
+                                )}
                             </div>
                         </div>
                     </CollapsibleSection>

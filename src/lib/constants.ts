@@ -6,7 +6,8 @@ export const defaultConfig: MossPolesData = {
         "visual": {
             "backgroundColor": "#FFFFFF",
             "textColor": "#333333",
-            "algaePercentage": 10
+            "algaePercentage": 10,
+            "polesPerRow": 4
         },
         "title": {
             "enabled": true,
@@ -45,6 +46,30 @@ export const defaultConfig: MossPolesData = {
             "humidityBottom": "60-70",
             "potColor": "#34A853",
             "displaySensorPlace": true
+        },
+        {
+            "name": "Anthurium Clarinervium",
+            "humidityTop": "75-85",
+            "humidityMiddle": "70-80",
+            "humidityBottom": "65-75",
+            "potColor": "#4285F4",
+            "displaySensorPlace": false
+        },
+        {
+            "name": "Anthurium Clarinervium",
+            "humidityTop": "75-85",
+            "humidityMiddle": "70-80",
+            "humidityBottom": "65-75",
+            "potColor": "#4285F4",
+            "displaySensorPlace": false
+        },
+        {
+            "name": "Anthurium Clarinervium",
+            "humidityTop": "75-85",
+            "humidityMiddle": "70-80",
+            "humidityBottom": "65-75",
+            "potColor": "#4285F4",
+            "displaySensorPlace": false
         },
         {
             "name": "Anthurium Clarinervium",

@@ -17,6 +17,7 @@ export interface VisualConfig {
     backgroundColor?: string;
     textColor?: string;
     algaePercentage?: number;
+    polesPerRow?: number;
 }
 
 export interface MossPole {

@@ -217,7 +217,6 @@ const MossPoleGenerator = () => {
           </Card>
         )}
 
-
         <Card>
           <Tabs defaultValue="visual" onValueChange={handleTabChange}>
             <TabsList className="w-full justify-start">

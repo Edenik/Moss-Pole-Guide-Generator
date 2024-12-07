@@ -20,13 +20,14 @@ const VisualConfigSchema = z.object({
   backgroundColor: ColorSchema.default("#FFFFFF"),
   textColor: ColorSchema.default("#333333"),
   algaePercentage: z.number().int().min(0).max(100).default(10),
+  polesPerRow: z.number().int().min(1).max(4).default(4),
 });
 
 // Schema for a single moss pole
 const MossPoleSchema = z.object({
   // Plant information
   name: z.string().min(1, "Name is required"),
-  
+
   // Humidity levels
   humidityTop: z.string().regex(/^\d{2}-\d{2}$/, "Format should be XX-XX"),
   humidityMiddle: z.string().regex(/^\d{2}-\d{2}$/, "Format should be XX-XX"),
@@ -43,13 +44,13 @@ const ConfigSchema = z.object({
     backgroundColor: "#FFFFFF",
     textColor: "#333333"
   }),
-  
+
   // Title configuration
   title: TitleConfigSchema.default({
     enabled: true,
     text: "Moss Pole Care Guide"
   }),
-  
+
   // Care tips configuration
   careTips: CareTipsSchema.default({
     enabled: true,
@@ -70,10 +71,6 @@ export const MossPolesSchema = z.object({
 
 // Export individual schemas for reuse
 export {
-  MossPoleSchema,
-  ConfigSchema,
-  ColorSchema,
-  CareTipsSchema,
-  TitleConfigSchema,
-  VisualConfigSchema,
+  CareTipsSchema, ColorSchema, ConfigSchema, MossPoleSchema, TitleConfigSchema,
+  VisualConfigSchema
 };
