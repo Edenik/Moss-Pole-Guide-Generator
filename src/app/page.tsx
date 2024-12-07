@@ -51,10 +51,9 @@ const MossPoleGenerator = () => {
 
   const handleInputChange = (value: string) => {
     const inputType = editorMode as 'json' | 'yaml';
-    setInput((prev) => ({
-      ...prev,
+    setInput({
       [inputType]: value,
-    }));
+    });
 
     const timeoutId = setTimeout(() => {
       const valid = validateInput(value, inputType);
@@ -89,9 +88,7 @@ const MossPoleGenerator = () => {
 
   const handleTabChange = (newMode: string) => {
     setEditorMode(newMode as 'visual' | 'json' | 'yaml');
-    if (newMode !== 'visual') {
-      syncFormats(input[newMode as 'json' | 'yaml'], newMode as 'json' | 'yaml');
-    }
+    syncFormats(input[newMode as 'json' | 'yaml'] || input['json'], newMode as 'json' | 'yaml');
   };
 
   const generateSVG = (value: string, type: 'json' | 'yaml', init: boolean = false) => {
@@ -132,6 +129,14 @@ const MossPoleGenerator = () => {
     }
   };
 
+  const parseInput = () => {
+    try {
+      return JSON.parse(input.json)
+    } catch (error) {
+      console.log(error)
+      return ""
+    }
+  }
   if (!mounted) return null;
 
   return (
@@ -244,7 +249,7 @@ const MossPoleGenerator = () => {
             <CardContent className="p-6">
               {editorMode === 'visual' ? (
                 <VisualEditor
-                  data={JSON.parse(input.json)}
+                  data={parseInput()}
                   onChange={handleVisualEditorChange}
                   onValidationError={setVisualEditorHasError}
                 />
@@ -264,6 +269,6 @@ const MossPoleGenerator = () => {
       </div>
     </main>
   );
-};
+}
 
 export default MossPoleGenerator;
