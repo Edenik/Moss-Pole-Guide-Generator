@@ -8,7 +8,7 @@ import { downloadSVG, printSVG } from "@/lib/helpers";
 import { generateMossPole } from "@/lib/svg_generator";
 import { InputType } from "@/lib/types";
 import { MossPolesSchema } from "@/lib/validation";
-import { Download, Moon, Pin, RefreshCw, Sun } from "lucide-react";
+import { Download, Github, Moon, Printer, RefreshCw, Sun } from "lucide-react";
 import { useTheme } from "next-themes";
 import { useEffect, useState } from "react";
 import { toast } from "react-hot-toast";
@@ -153,8 +153,9 @@ const MossPoleGenerator = () => {
               <RefreshCw className="h-5 w-5" />
             </Button>
             <Button
-              variant="ghost"
+              variant="outline"
               size="icon"
+              title="Dark / Light Mode"
               onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
             >
               {theme === "dark" ? (
@@ -163,6 +164,15 @@ const MossPoleGenerator = () => {
                 <Moon className="h-5 w-5" />
               )}
             </Button>
+            <Button
+              variant="outline"
+              size="icon"
+              onClick={() => window.open("https://github.com/Edenik/Moss-Pole-Guide-Generator", "_blank")}
+              title="GitHub Repository"
+            >
+              <Github className="h-5 w-5" />
+            </Button>
+
           </div>
         </div>
 
@@ -222,7 +232,7 @@ const MossPoleGenerator = () => {
             className="gap-2"
             disabled={!svgOutput}
           >
-            <Pin className="h-4 w-4" />
+            <Printer className="h-4 w-4" />
             Print SVG
           </Button>
         </div>
