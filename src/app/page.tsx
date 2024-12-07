@@ -107,10 +107,10 @@ const MossPoleGenerator = () => {
       const svg = generateMossPole(result.data);
       setImageOutput(svg);
       if (!init) {
-        toast.success("SVG generated successfully!");
+        toast.success("Image generated successfully!");
       }
     } catch (error) {
-      toast.error("Error generating SVG. Please check your input.");
+      toast.error("Error generating Image. Please check your input.");
       console.error("Generation error:", error);
     }
   };

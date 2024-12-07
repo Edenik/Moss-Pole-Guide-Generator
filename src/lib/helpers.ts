@@ -55,26 +55,26 @@ export const downloadJSON = (jsonData: string) => {
   }
 };
 
-const downloadImage = async (svgOutput: string, type: FileType) => {
-  if (!svgOutput) {
-    toast.error("Generate an SVG first!");
+const downloadImage = async (image: string, type: FileType) => {
+  if (!image) {
+    toast.error("Generate an Image first!");
     return;
   }
 
   try {
     if (type === FileType.svg) {
-      const blob = new Blob([svgOutput], { type: "image/svg+xml" });
+      const blob = new Blob([image], { type: "image/svg+xml" });
       downloadFile(blob, `moss-pole-guide.${type}`);
       toast.success("SVG downloaded!");
       return;
     }
 
     // Get SVG dimensions from the viewBox
-    const viewBox = svgOutput.match(/viewBox="([^"]*)"/)![1].split(' ');
+    const viewBox = image.match(/viewBox="([^"]*)"/)![1].split(' ');
     const width = parseFloat(viewBox[2]);
     const height = parseFloat(viewBox[3]);
 
-    const blob = new Blob([svgOutput], { type: "image/svg+xml" });
+    const blob = new Blob([image], { type: "image/svg+xml" });
     const url = URL.createObjectURL(blob);
     const img = new Image();
     const canvas = document.createElement("canvas");
@@ -131,14 +131,14 @@ const downloadImage = async (svgOutput: string, type: FileType) => {
   }
 };
 
-export const downloadPDF = (svgOutput: string) => downloadImage(svgOutput, FileType.pdf);
-export const downloadSVG = (svgOutput: string) => downloadImage(svgOutput, FileType.svg);
-export const downloadPNG = (svgOutput: string) => downloadImage(svgOutput, FileType.png);
-export const downloadJPG = (svgOutput: string) => downloadImage(svgOutput, FileType.jpg);
+export const downloadPDF = (image: string) => downloadImage(image, FileType.pdf);
+export const downloadSVG = (image: string) => downloadImage(image, FileType.svg);
+export const downloadPNG = (image: string) => downloadImage(image, FileType.png);
+export const downloadJPG = (image: string) => downloadImage(image, FileType.jpg);
 
-export const print = (svgOutput: string) => {
-  if (!svgOutput) {
-    toast.error("Generate an SVG first!");
+export const print = (image: string) => {
+  if (!image) {
+    toast.error("Generate an Image first!");
     return;
   }
 
@@ -150,14 +150,14 @@ export const print = (svgOutput: string) => {
           <title>Moss Pole Guide</title>
         </head>
         <body>
-          ${svgOutput}
+          ${image}
         </body>
       </html>
     `);
     printWindow.document.close();
     printWindow.print();
     printWindow.close();
-    toast.success("SVG printed successfully!");
+    toast.success("Image printed successfully!");
   } else {
     toast.error("Failed to open print window.");
   }
