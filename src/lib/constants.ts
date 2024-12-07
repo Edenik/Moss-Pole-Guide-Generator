@@ -1,4 +1,3 @@
-import { parse } from "yaml";
 import { MossPolesData } from "./types";
 
 export const defaultConfig: MossPolesData = {
@@ -60,5 +59,5 @@ export const defaultConfig: MossPolesData = {
 
 export const defaultInput: Record<string, string> = {
     json: JSON.stringify(defaultConfig, null, 2),
-    yaml: parse(JSON.stringify(defaultConfig, null, 2))
+    yaml: JSON.stringify(defaultConfig, null, 2)
 }
