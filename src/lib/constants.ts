@@ -55,30 +55,6 @@ export const defaultConfig: MossPolesData = {
             "potColor": "#4285F4",
             "displaySensorPlace": false
         },
-        {
-            "name": "Anthurium Clarinervium",
-            "humidityTop": "75-85",
-            "humidityMiddle": "70-80",
-            "humidityBottom": "65-75",
-            "potColor": "#4285F4",
-            "displaySensorPlace": false
-        },
-        {
-            "name": "Anthurium Clarinervium",
-            "humidityTop": "75-85",
-            "humidityMiddle": "70-80",
-            "humidityBottom": "65-75",
-            "potColor": "#4285F4",
-            "displaySensorPlace": false
-        },
-        {
-            "name": "Anthurium Clarinervium",
-            "humidityTop": "75-85",
-            "humidityMiddle": "70-80",
-            "humidityBottom": "65-75",
-            "potColor": "#4285F4",
-            "displaySensorPlace": false
-        }
     ]
 }
 

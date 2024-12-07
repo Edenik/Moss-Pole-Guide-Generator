@@ -1,8 +1,3 @@
-export interface ColorConfig {
-    backgroundColor?: string;
-    textColor?: string;
-}
-
 export interface CareTipsConfig {
     enabled: boolean;
     tips?: string[];
@@ -14,10 +9,10 @@ export interface TitleConfig {
 }
 
 export interface VisualConfig {
-    backgroundColor?: string;
-    textColor?: string;
-    algaePercentage?: number;
-    polesPerRow?: number;
+    backgroundColor: string;
+    textColor: string;
+    algaePercentage: number;
+    polesPerRow: number;
 }
 
 export interface MossPole {
