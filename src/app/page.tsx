@@ -172,7 +172,7 @@ const MossPoleGenerator = () => {
           </div>
         </div>
 
-        <div className="flex justify-end gap-4">
+        <div className="grid grid-cols-2 sm:flex sm:flex-row gap-2 sm:gap-4 sm:justify-end">
           <Button
             variant="outline"
             onClick={handleReset}
