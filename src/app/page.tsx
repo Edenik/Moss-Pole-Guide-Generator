@@ -1,36 +1,38 @@
 "use client"
+import CodeEditor from "@/components/CodeEditor";
+import VisualEditor from "@/components/VisualEditor";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Textarea } from "@/components/ui/textarea";
 import { defaultInput } from "@/lib/constants";
 import { downloadSVG, printSVG } from "@/lib/helpers";
 import { generateMossPole } from "@/lib/svg_generator";
-import { InputType } from "@/lib/types";
+import { InputType, MossPolesData } from "@/lib/types";
 import { MossPolesSchema } from "@/lib/validation";
 import { Download, Github, Moon, Printer, RefreshCw, Sun } from "lucide-react";
 import { useTheme } from "next-themes";
-import { useEffect, useState } from "react";
+import { useEffect, useState } from 'react';
 import { toast } from "react-hot-toast";
 import { parse, stringify } from "yaml";
 
 const MossPoleGenerator = () => {
-  const [inputType, setInputType] = useState<InputType>(InputType.json);
+  const [editorMode, setEditorMode] = useState<'visual' | 'json' | 'yaml'>('visual');
   const [input, setInput] = useState(defaultInput);
   const [isValid, setIsValid] = useState(true);
   const [svgOutput, setSvgOutput] = useState<string>("");
   const { theme, setTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
   const [validationError, setValidationError] = useState<string | null>(null);
+  const [visualEditorHasError, setVisualEditorHasError] = useState(false);
 
   useEffect(() => {
-    generateSVG(defaultInput[inputType], inputType, true);
+    generateSVG(defaultInput.json, 'json', true);
     setMounted(true);
   }, []);
 
-  const validateInput = (value: string, type: InputType): boolean => {
+  const validateInput = (value: string, type: 'json' | 'yaml'): boolean => {
     try {
-      const parsedData = type === InputType.json ? JSON.parse(value) : parse(value);
+      const parsedData = type === 'json' ? JSON.parse(value) : parse(value);
       const result = MossPolesSchema.safeParse(parsedData);
 
       if (!result.success) {
@@ -47,12 +49,12 @@ const MossPoleGenerator = () => {
   };
 
   const handleInputChange = (value: string) => {
+    const inputType = editorMode as 'json' | 'yaml';
     setInput((prev) => ({
       ...prev,
       [inputType]: value,
     }));
 
-    // Debounce validation to avoid excessive checking
     const timeoutId = setTimeout(() => {
       const valid = validateInput(value, inputType);
       setIsValid(valid);
@@ -64,16 +66,25 @@ const MossPoleGenerator = () => {
     return () => clearTimeout(timeoutId);
   };
 
-  const syncFormats = (value: string, fromType: InputType) => {
-    try {
-      const parsedData = fromType === InputType.json ? JSON.parse(value) : parse(value);
+  const handleVisualEditorChange = (data: MossPolesData) => {
+    const jsonStr = JSON.stringify(data, null, 2);
+    setInput({
+      json: jsonStr,
+      yaml: stringify(data)
+    });
+    if (!visualEditorHasError) {
+      generateSVG(jsonStr, 'json');
+    }
+  };
 
+  const syncFormats = (value: string, fromType: 'json' | 'yaml') => {
+    try {
+      const parsedData = fromType === 'json' ? JSON.parse(value) : parse(value);
       setInput({
         json: JSON.stringify(parsedData, null, 2),
         yaml: stringify(parsedData),
       });
     } catch (error) {
-      // If parsing fails, just update the current format
       setInput((prev) => ({
         ...prev,
         [fromType]: value,
@@ -81,14 +92,16 @@ const MossPoleGenerator = () => {
     }
   };
 
-  const handleTabChange = (newType: string) => {
-    setInputType(newType as InputType);
-    syncFormats(input[inputType], inputType);
+  const handleTabChange = (newMode: string) => {
+    setEditorMode(newMode as 'visual' | 'json' | 'yaml');
+    if (newMode !== 'visual') {
+      syncFormats(input[newMode as 'json' | 'yaml'], newMode as 'json' | 'yaml');
+    }
   };
 
-  const generateSVG = (value: string, type: InputType, init: boolean = false) => {
+  const generateSVG = (value: string, type: 'json' | 'yaml', init: boolean = false) => {
     try {
-      const data = type === InputType.json ? JSON.parse(value) : parse(value);
+      const data = type === 'json' ? JSON.parse(value) : parse(value);
       const result = MossPolesSchema.safeParse(data);
 
       if (!result.success) {
@@ -107,34 +120,24 @@ const MossPoleGenerator = () => {
     }
   };
 
-  const handleDownload = () => {
-    downloadSVG(svgOutput);
-  };
-
-  const handlePrint = () => {
-    printSVG(svgOutput);
-  };
-
   const handleReset = () => {
     setInput(defaultInput);
     setIsValid(true);
     setValidationError(null);
     setSvgOutput("");
-    generateSVG(defaultInput[inputType], inputType, true);
+    generateSVG(defaultInput.json, 'json', true);
     toast.success("Reset to default configuration");
   };
 
   const handleRegenerate = () => {
     if (isValid) {
-      generateSVG(input[inputType], inputType);
+      generateSVG(input[editorMode === 'visual' ? 'json' : editorMode], editorMode === 'visual' ? 'json' : editorMode);
     } else {
       toast.error("Invalid input format. Please check your data structure.");
     }
   };
 
-  if (!mounted) {
-    return null;
-  }
+  if (!mounted) return null;
 
   return (
     <main className="min-h-screen p-4 md:p-8 bg-background">
@@ -172,27 +175,32 @@ const MossPoleGenerator = () => {
             >
               <Github className="h-5 w-5" />
             </Button>
-
           </div>
         </div>
 
         <Card>
-          <Tabs defaultValue={inputType} onValueChange={handleTabChange}>
+          <Tabs defaultValue="visual" onValueChange={handleTabChange}>
             <TabsList className="w-full justify-start">
-              <TabsTrigger value={InputType.json}>JSON</TabsTrigger>
-              <TabsTrigger value={InputType.yaml}>YAML</TabsTrigger>
+              <TabsTrigger value="visual">Visual Editor</TabsTrigger>
+              <TabsTrigger value="json">JSON</TabsTrigger>
+              <TabsTrigger value="yaml">YAML</TabsTrigger>
             </TabsList>
-            <CardContent className="p-6 space-y-2">
-              <Textarea
-                value={input[inputType]}
-                onChange={(e) => handleInputChange(e.target.value)}
-                className={`font-mono min-h-[300px] ${!isValid ? "border-red-500 dark:border-red-400" : ""}`}
-                placeholder={`Enter your ${inputType.toUpperCase()} data here...`}
-              />
-              {validationError && (
-                <p className="text-sm text-red-500 dark:text-red-400">
-                  {validationError}
-                </p>
+            <CardContent className="p-6">
+              {editorMode === 'visual' ? (
+                <VisualEditor
+                  data={JSON.parse(input.json)}
+                  onChange={handleVisualEditorChange}
+                  onValidationError={setVisualEditorHasError}
+                />
+              ) : (
+                <CodeEditor
+                  value={input[editorMode]}
+                  onChange={handleInputChange}
+                  language={editorMode === 'json' ? InputType.json : InputType.yaml}
+                  isValid={isValid}
+                  validationError={validationError}
+                  theme={theme as 'light' | 'dark'}
+                />
               )}
             </CardContent>
           </Tabs>
@@ -214,13 +222,13 @@ const MossPoleGenerator = () => {
             variant="outline"
             onClick={handleRegenerate}
             className="gap-2"
-            disabled={!isValid}
+            disabled={!isValid || visualEditorHasError}
           >
             <RefreshCw className="h-4 w-4" />
             Regenerate
           </Button>
           <Button
-            onClick={handleDownload}
+            onClick={downloadSVG.bind(null, svgOutput)}
             className="gap-2"
             disabled={!svgOutput}
           >
@@ -228,7 +236,7 @@ const MossPoleGenerator = () => {
             Download SVG
           </Button>
           <Button
-            onClick={handlePrint}
+            onClick={printSVG.bind(null, svgOutput)}
             className="gap-2"
             disabled={!svgOutput}
           >
