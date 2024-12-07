@@ -26,5 +26,4 @@ Open [http://localhost:5500](http://localhost:5500) with your browser to see the
 
 ## TODO -
 
-- maximum items per row
 - add description line below name
