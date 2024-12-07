@@ -1,5 +1,6 @@
 "use client"
 import CodeEditor from "@/components/custom/CodeEditor";
+import ExamplesDropdown from "@/components/custom/ExamplesDropDown";
 import VisualEditor from "@/components/custom/VisualEditor";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -215,6 +216,7 @@ const MossPoleGenerator = () => {
             <Eraser className="h-5 w-5" />
             Reset To Default
           </Button>
+          <ExamplesDropdown onSelect={(jsonData) => { generateSVG(jsonData, "json") }} />
           <Button
             onClick={handleRegenerate}
             className="gap-2"
