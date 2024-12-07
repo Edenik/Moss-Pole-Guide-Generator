@@ -3,13 +3,14 @@ import CodeEditor from "@/components/custom/CodeEditor";
 import VisualEditor from "@/components/custom/VisualEditor";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/drop-down-menu";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { defaultInput } from "@/lib/constants";
-import { downloadSVG, printSVG } from "@/lib/helpers";
+import { downloadJPG, downloadPDF, downloadPNG, downloadSVG, printSVG as print } from "@/lib/helpers";
 import { generateMossPole } from "@/lib/svg_generator";
 import { InputType, MossPolesData } from "@/lib/types";
 import { MossPolesSchema } from "@/lib/validation";
-import { Download, Eraser, Github, Moon, Printer, RefreshCw, Sun } from "lucide-react";
+import { ChevronDown, Download, Eraser, Github, Moon, Printer, RefreshCw, Sun } from "lucide-react";
 import { useTheme } from "next-themes";
 import { useEffect, useState } from 'react';
 import { toast } from "react-hot-toast";
@@ -19,7 +20,7 @@ const MossPoleGenerator = () => {
   const [editorMode, setEditorMode] = useState<'visual' | 'json' | 'yaml'>('visual');
   const [input, setInput] = useState(defaultInput);
   const [isValid, setIsValid] = useState(true);
-  const [svgOutput, setSvgOutput] = useState<string>("");
+  const [imageOutput, setImageOutput] = useState<string>("");
   const { theme, setTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
   const [validationError, setValidationError] = useState<string | null>(null);
@@ -104,7 +105,7 @@ const MossPoleGenerator = () => {
       }
 
       const svg = generateMossPole(result.data);
-      setSvgOutput(svg);
+      setImageOutput(svg);
       if (!init) {
         toast.success("SVG generated successfully!");
       }
@@ -118,7 +119,7 @@ const MossPoleGenerator = () => {
     setInput(defaultInput);
     setIsValid(true);
     setValidationError(null);
-    setSvgOutput("");
+    setImageOutput("");
     generateSVG(defaultInput.json, 'json', true);
     toast.success("Reset to default configuration");
   };
@@ -166,12 +167,12 @@ const MossPoleGenerator = () => {
           </div>
         </div>
 
-        {svgOutput && (
+        {imageOutput && (
           <Card>
             <CardContent className="p-6">
               <div
                 className="w-full overflow-auto bg-white dark:bg-gray-800 rounded-lg"
-                dangerouslySetInnerHTML={{ __html: svgOutput }}
+                dangerouslySetInnerHTML={{ __html: imageOutput }}
               />
             </CardContent>
           </Card>
@@ -195,22 +196,37 @@ const MossPoleGenerator = () => {
             Regenerate
           </Button>
           <Button
-            onClick={downloadSVG.bind(null, svgOutput)}
+            onClick={print.bind(null, imageOutput)}
             className="gap-2"
             variant="outline"
-            disabled={!svgOutput}
-          >
-            <Download className="h-4 w-4" />
-            Download SVG
-          </Button>
-          <Button
-            onClick={printSVG.bind(null, svgOutput)}
-            className="gap-2"
-            variant="outline"
-            disabled={!svgOutput}>
+            disabled={!imageOutput}>
             <Printer className="h-4 w-4" />
-            Print SVG
+            Print
           </Button>
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="outline" className="w-full sm:w-auto" disabled={!imageOutput}>
+                <Download className="h-4 w-4 mr-2" />
+                Download
+                <ChevronDown className="h-4 w-4 ml-2" />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end">
+              <DropdownMenuItem onClick={() => downloadPNG(imageOutput)}>
+                PNG
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={() => downloadJPG(imageOutput)}>
+                JPG
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={() => downloadSVG(imageOutput)}>
+                SVG
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={() => downloadPDF(imageOutput)}>
+                PDF
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+
         </div>
 
         <Card>
