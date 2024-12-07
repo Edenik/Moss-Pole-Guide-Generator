@@ -9,7 +9,7 @@ import { downloadSVG, printSVG } from "@/lib/helpers";
 import { generateMossPole } from "@/lib/svg_generator";
 import { InputType, MossPolesData } from "@/lib/types";
 import { MossPolesSchema } from "@/lib/validation";
-import { Download, Github, Moon, Printer, RefreshCw, Sun } from "lucide-react";
+import { Download, Eraser, Github, Moon, Printer, RefreshCw, Sun } from "lucide-react";
 import { useTheme } from "next-themes";
 import { useEffect, useState } from 'react';
 import { toast } from "react-hot-toast";
@@ -58,9 +58,6 @@ const MossPoleGenerator = () => {
     const timeoutId = setTimeout(() => {
       const valid = validateInput(value, inputType);
       setIsValid(valid);
-      if (valid) {
-        generateSVG(value, inputType);
-      }
     }, 500);
 
     return () => clearTimeout(timeoutId);
@@ -72,9 +69,6 @@ const MossPoleGenerator = () => {
       json: jsonStr,
       yaml: stringify(data)
     });
-    if (!visualEditorHasError) {
-      generateSVG(jsonStr, 'json');
-    }
   };
 
   const syncFormats = (value: string, fromType: 'json' | 'yaml') => {
@@ -172,40 +166,6 @@ const MossPoleGenerator = () => {
           </div>
         </div>
 
-        <div className="grid grid-cols-2 sm:flex sm:flex-row gap-2 sm:gap-4 sm:justify-end">
-          <Button
-            variant="outline"
-            onClick={handleReset}
-            title="Reset to default"
-          >
-            <RefreshCw className="h-5 w-5" />
-            Reset To Default
-          </Button>
-          <Button
-            variant="outline"
-            onClick={handleRegenerate}
-            className="gap-2"
-            disabled={!isValid || visualEditorHasError}>
-            <RefreshCw className="h-4 w-4" />
-            Regenerate
-          </Button>
-          <Button
-            onClick={downloadSVG.bind(null, svgOutput)}
-            className="gap-2"
-            disabled={!svgOutput}
-          >
-            <Download className="h-4 w-4" />
-            Download SVG
-          </Button>
-          <Button
-            onClick={printSVG.bind(null, svgOutput)}
-            className="gap-2"
-            disabled={!svgOutput}>
-            <Printer className="h-4 w-4" />
-            Print SVG
-          </Button>
-        </div>
-
         {svgOutput && (
           <Card>
             <CardContent className="p-6">
@@ -216,6 +176,42 @@ const MossPoleGenerator = () => {
             </CardContent>
           </Card>
         )}
+
+        <div className="grid grid-cols-2 sm:flex sm:flex-row gap-2 sm:gap-4 sm:justify-center">
+          <Button
+            onClick={handleReset}
+            variant="outline"
+            title="Reset to default"
+          >
+            <Eraser className="h-5 w-5" />
+            Reset To Default
+          </Button>
+          <Button
+            onClick={handleRegenerate}
+            className="gap-2"
+            variant="outline"
+            disabled={!isValid || visualEditorHasError}>
+            <RefreshCw className="h-4 w-4" />
+            Regenerate
+          </Button>
+          <Button
+            onClick={downloadSVG.bind(null, svgOutput)}
+            className="gap-2"
+            variant="outline"
+            disabled={!svgOutput}
+          >
+            <Download className="h-4 w-4" />
+            Download SVG
+          </Button>
+          <Button
+            onClick={printSVG.bind(null, svgOutput)}
+            className="gap-2"
+            variant="outline"
+            disabled={!svgOutput}>
+            <Printer className="h-4 w-4" />
+            Print SVG
+          </Button>
+        </div>
 
         <Card>
           <Tabs defaultValue="visual" onValueChange={handleTabChange}>
