@@ -216,7 +216,10 @@ const MossPoleGenerator = () => {
             <Eraser className="h-5 w-5" />
             Reset To Default
           </Button>
-          <ExamplesDropdown onSelect={(jsonData) => { generateSVG(jsonData, "json") }} />
+          <ExamplesDropdown onSelect={(jsonData) => {
+            generateSVG(jsonData, "json")
+            syncFormats(jsonData, 'json');
+          }} />
           <Button
             onClick={handleRegenerate}
             className="gap-2"
