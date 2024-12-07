@@ -1,6 +1,5 @@
 # Moss-Pole-Guide-Generator
 
-![Alt text](https://raw.githubusercontent.com/Edenik/Moss-Pole-Guide-Generator/refs/heads/main/output/moss-pole-guide.svg?sanitize=true)
 <img src="https://raw.githubusercontent.com/Edenik/Moss-Pole-Guide-Generator/refs/heads/main/output/moss-pole-guide.svg?sanitize=true">
 
 ## Getting Started
