@@ -6,13 +6,14 @@ import { Card, CardContent } from "@/components/ui/card";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/drop-down-menu";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { defaultInput } from "@/lib/constants";
+import { importFile } from "@/lib/file-import";
 import { downloadJPG, downloadJSON, downloadPDF, downloadPNG, downloadSVG, downloadYAML, print } from "@/lib/helpers";
-import { generateMossPole } from "@/lib/svg_generator";
+import { generateMossPole } from "@/lib/svg-generator";
 import { InputType, MossPolesData } from "@/lib/types";
 import { MossPolesSchema } from "@/lib/validation";
-import { ChevronDown, Download, Eraser, Github, Moon, Printer, RefreshCw, Sun } from "lucide-react";
+import { ChevronDown, Download, Eraser, Github, Moon, Printer, RefreshCw, Sun, Upload } from "lucide-react";
 import { useTheme } from "next-themes";
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { toast } from "react-hot-toast";
 import { parse, stringify } from "yaml";
 
@@ -25,6 +26,7 @@ const MossPoleGenerator = () => {
   const [mounted, setMounted] = useState(false);
   const [validationError, setValidationError] = useState<string | null>(null);
   const [visualEditorHasError, setVisualEditorHasError] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     generateSVG(defaultInput.json, 'json', true);
@@ -121,6 +123,27 @@ const MossPoleGenerator = () => {
     toast.success("Reset to default configuration");
   };
 
+  const handleImport = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    try {
+      const content = await importFile(file);
+      setInput({
+        json: content.json,
+        yaml: content.yaml
+      });
+      generateSVG(content.json, 'json');
+    } catch (error) {
+      console.error('Import error:', error);
+    }
+
+    // Reset the file input
+    if (fileInputRef.current) {
+      fileInputRef.current.value = '';
+    }
+  };
+
   const handleRegenerate = () => {
     if (isValid) {
       generateSVG(input[editorMode === 'visual' ? 'json' : editorMode], editorMode === 'visual' ? 'json' : editorMode);
@@ -208,6 +231,24 @@ const MossPoleGenerator = () => {
             <Printer className="h-4 w-4" />
             Print
           </Button>
+          <>
+            <input
+              type="file"
+              accept=".json"
+              onChange={handleImport}
+              ref={fileInputRef}
+              className="hidden"
+            />
+            <Button
+              onClick={() => fileInputRef.current?.click()}
+              variant="outline"
+              className="gap-2"
+            >
+              <Upload className="h-4 w-4" />
+              Import
+            </Button>
+          </>
+
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button variant="outline" className="w-full sm:w-auto" disabled={!imageOutput}>
