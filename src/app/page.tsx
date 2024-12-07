@@ -6,7 +6,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/drop-down-menu";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { defaultInput } from "@/lib/constants";
-import { downloadJPG, downloadPDF, downloadPNG, downloadSVG, printSVG as print } from "@/lib/helpers";
+import { downloadJPG, downloadJSON, downloadPDF, downloadPNG, downloadSVG, downloadYAML, print } from "@/lib/helpers";
 import { generateMossPole } from "@/lib/svg_generator";
 import { InputType, MossPolesData } from "@/lib/types";
 import { MossPolesSchema } from "@/lib/validation";
@@ -224,9 +224,14 @@ const MossPoleGenerator = () => {
               <DropdownMenuItem onClick={() => downloadPDF(imageOutput)}>
                 PDF
               </DropdownMenuItem>
+              <DropdownMenuItem onClick={() => downloadJSON(input.json)}>
+                JSON
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={() => downloadYAML(input.yaml)}>
+                YAML
+              </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
-
         </div>
 
         <Card>

@@ -1,5 +1,6 @@
 import { jsPDF } from 'jspdf';
 import { toast } from "react-hot-toast";
+import { stringify } from 'yaml';
 
 const downloadFile = (blob: Blob, filename: string) => {
   const url = URL.createObjectURL(blob);
@@ -16,8 +17,43 @@ enum FileType {
   svg = 'svg',
   png = 'png',
   jpg = 'jpg',
-  pdf = 'pdf'
+  pdf = 'pdf',
+  json = 'json',
+  yaml = 'yaml'
 }
+
+const downloadData = (data: string, type: FileType.json | FileType.yaml) => {
+  const blob = new Blob([data], { type: 'text/plain' });
+  downloadFile(blob, `moss-pole-guide.${type}`);
+  toast.success(`${type.toUpperCase()} downloaded!`);
+};
+
+export const downloadYAML = (yamlData: string) => {
+  if (!yamlData) {
+    toast.error("No data to download!");
+    return;
+  }
+  try {
+    downloadData(stringify(yamlData), FileType.yaml);
+  } catch (error) {
+    toast.error("Error downloading YAML!");
+    console.error(error);
+  }
+};
+
+export const downloadJSON = (jsonData: string) => {
+  if (!jsonData) {
+    toast.error("No data to download!");
+    return;
+  }
+  try {
+    const prettyJson = JSON.stringify(JSON.parse(jsonData), null, 2);
+    downloadData(prettyJson, FileType.json);
+  } catch (error) {
+    toast.error("Error downloading JSON!");
+    console.error(error);
+  }
+};
 
 const downloadImage = async (svgOutput: string, type: FileType) => {
   if (!svgOutput) {
@@ -100,7 +136,7 @@ export const downloadSVG = (svgOutput: string) => downloadImage(svgOutput, FileT
 export const downloadPNG = (svgOutput: string) => downloadImage(svgOutput, FileType.png);
 export const downloadJPG = (svgOutput: string) => downloadImage(svgOutput, FileType.jpg);
 
-export const printSVG = (svgOutput: string) => {
+export const print = (svgOutput: string) => {
   if (!svgOutput) {
     toast.error("Generate an SVG first!");
     return;
