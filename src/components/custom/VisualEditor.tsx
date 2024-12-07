@@ -3,6 +3,8 @@ import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Switch } from "@/components/ui/switch";
 import { Config, MossPole, MossPolesData } from "@/lib/types";
 import {
     closestCenter,
@@ -21,10 +23,10 @@ import {
 } from '@dnd-kit/sortable';
 import { AlertCircle, Plus } from "lucide-react";
 import React from 'react';
-import { CollapsibleSection } from "./ui/CollapsibleSection";
-import { ColorInput } from "./ui/ColorInput";
-import { SortablePole } from "./ui/SortablePole";
-import { SortableTip } from "./ui/SortableTip";
+import { CollapsibleSection } from "./CollapsibleSection";
+import { ColorInput } from "./ColorInput";
+import { SortablePole } from "./SortablePole";
+import { SortableTip } from "./SortableTip";
 
 interface VisualEditorProps {
     data: MossPolesData;
@@ -145,7 +147,7 @@ const VisualEditor = ({
                     <CardTitle>Configuration</CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-4">
-                    <CollapsibleSection title="Visual Settings">
+                    <CollapsibleSection border title="Visual Settings">
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                             <ColorInput
                                 label="Background Color"
@@ -159,55 +161,106 @@ const VisualEditor = ({
                                 onChange={(e: any) => handleVisualConfigChange('textColor', e.target.value)}
                                 error={validationErrors['textColor']}
                             />
-                            <Input
-                                // label="Algae %"
-                                type="number"
-                                min="0"
-                                max="100"
-                                value={data.config.visual.algaePercentage}
-                                onChange={(e: any) => handleVisualConfigChange('algaePercentage', e.target.value)}
-                            />
+                            <div className="space-y-1">
+                                <Label>Algae %</Label>
+                                <Input
+                                    type="number"
+                                    min="0"
+                                    max="100"
+                                    value={data.config.visual.algaePercentage}
+                                    onChange={(e) => handleVisualConfigChange('algaePercentage', e.target.value)}
+                                />
+                            </div>
                         </div>
                     </CollapsibleSection>
 
-                    {data.config.careTips.enabled && (
-                        <DndContext
-                            sensors={sensors}
-                            collisionDetection={closestCenter}
-                            onDragEnd={handleTipsDragEnd}
-                        >
-                            <SortableContext
-                                items={(data.config.careTips.tips || []).map((_, i) => `tip-${i}`)}
-                                strategy={verticalListSortingStrategy}
-                            >
+                    <CollapsibleSection border title="Title & Tips">
+                        <div className="space-y-4">
+                            <div className="flex items-center justify-between">
+                                <Label>Show Title</Label>
+                                <Switch
+                                    checked={data.config.title.enabled}
+                                    onCheckedChange={(checked) => handleConfigChange('title', {
+                                        ...data.config.title,
+                                        enabled: checked
+                                    })}
+                                />
+                            </div>
+                            {data.config.title.enabled && (
+                                <Input
+                                    value={data.config.title.text}
+                                    onChange={(e) => handleConfigChange('title', {
+                                        ...data.config.title,
+                                        text: e.target.value
+                                    })}
+                                    placeholder="Title text"
+                                />
+                            )}
+
+                            <div className="flex items-center justify-between">
+                                <Label>Show Care Tips</Label>
+                                <Switch
+                                    checked={data.config.careTips.enabled}
+                                    onCheckedChange={(checked) => handleConfigChange('careTips', {
+                                        ...data.config.careTips,
+                                        enabled: checked
+                                    })}
+                                />
+                            </div>
+                            {data.config.careTips.enabled && (
                                 <div className="space-y-2">
-                                    {data.config.careTips.tips?.map((tip, i) => (
-                                        <SortableTip
-                                            key={`tip-${i}`}
-                                            id={`tip-${i}`}
-                                            tip={tip}
-                                            index={i}
-                                            onChange={(index: number, value: string) => {
-                                                const newTips = [...(data.config.careTips.tips || [])];
-                                                newTips[index] = value;
-                                                handleConfigChange('careTips', {
-                                                    ...data.config.careTips,
-                                                    tips: newTips
-                                                });
-                                            }}
-                                            onRemove={(index: number) => {
-                                                const newTips = data.config.careTips.tips?.filter((_, idx) => idx !== index);
-                                                handleConfigChange('careTips', {
-                                                    ...data.config.careTips,
-                                                    tips: newTips
-                                                });
-                                            }}
-                                        />
-                                    ))}
+                                    <DndContext
+                                        sensors={sensors}
+                                        collisionDetection={closestCenter}
+                                        onDragEnd={handleTipsDragEnd}
+                                    >
+                                        <SortableContext
+                                            items={(data.config.careTips.tips || []).map((_, i) => `tip-${i}`)}
+                                            strategy={verticalListSortingStrategy}
+                                        >
+                                            <div className="space-y-2">
+                                                {data.config.careTips.tips?.map((tip, i) => (
+                                                    <SortableTip
+                                                        key={`tip-${i}`}
+                                                        id={`tip-${i}`}
+                                                        tip={tip}
+                                                        index={i}
+                                                        onChange={(index: number, value: string) => {
+                                                            const newTips = [...(data.config.careTips.tips || [])];
+                                                            newTips[index] = value;
+                                                            handleConfigChange('careTips', {
+                                                                ...data.config.careTips,
+                                                                tips: newTips
+                                                            });
+                                                        }}
+                                                        onRemove={(index: number) => {
+                                                            const newTips = data.config.careTips.tips?.filter((_, idx) => idx !== index);
+                                                            handleConfigChange('careTips', {
+                                                                ...data.config.careTips,
+                                                                tips: newTips
+                                                            });
+                                                        }}
+                                                    />
+                                                ))}
+                                            </div>
+                                        </SortableContext>
+                                    </DndContext>
+                                    <Button
+                                        variant="outline"
+                                        onClick={() => {
+                                            const newTips = [...(data.config.careTips.tips || []), "New tip"];
+                                            handleConfigChange('careTips', {
+                                                ...data.config.careTips,
+                                                tips: newTips
+                                            });
+                                        }}
+                                    >
+                                        <Plus className="h-4 w-4 mr-2" /> Add Tip
+                                    </Button>
                                 </div>
-                            </SortableContext>
-                        </DndContext>
-                    )}
+                            )}
+                        </div>
+                    </CollapsibleSection>
                 </CardContent>
             </Card>
 

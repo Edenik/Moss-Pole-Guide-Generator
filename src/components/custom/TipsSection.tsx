@@ -52,7 +52,7 @@ export const TipsSection = ({ config, onConfigChange }: TipsSectionProps) => {
     };
 
     return (
-        <CollapsibleSection title="Care Tips" >
+        <CollapsibleSection border title="Care Tips" >
             <div className="space-y-4" >
                 <div className="flex items-center justify-between" >
                     <Label>Show Care Tips </Label>

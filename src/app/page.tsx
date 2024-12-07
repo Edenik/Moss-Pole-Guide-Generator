@@ -1,6 +1,6 @@
 "use client"
-import CodeEditor from "@/components/CodeEditor";
-import VisualEditor from "@/components/VisualEditor";
+import CodeEditor from "@/components/custom/CodeEditor";
+import VisualEditor from "@/components/custom/VisualEditor";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -150,14 +150,6 @@ const MossPoleGenerator = () => {
             <Button
               variant="outline"
               size="icon"
-              onClick={handleReset}
-              title="Reset to default"
-            >
-              <RefreshCw className="h-5 w-5" />
-            </Button>
-            <Button
-              variant="outline"
-              size="icon"
               title="Dark / Light Mode"
               onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
             >
@@ -175,8 +167,56 @@ const MossPoleGenerator = () => {
             >
               <Github className="h-5 w-5" />
             </Button>
+
+
           </div>
         </div>
+
+        <div className="flex justify-end gap-4">
+          <Button
+            variant="outline"
+            onClick={handleReset}
+            title="Reset to default"
+          >
+            <RefreshCw className="h-5 w-5" />
+            Reset To Default
+          </Button>
+          <Button
+            variant="outline"
+            onClick={handleRegenerate}
+            className="gap-2"
+            disabled={!isValid || visualEditorHasError}>
+            <RefreshCw className="h-4 w-4" />
+            Regenerate
+          </Button>
+          <Button
+            onClick={downloadSVG.bind(null, svgOutput)}
+            className="gap-2"
+            disabled={!svgOutput}
+          >
+            <Download className="h-4 w-4" />
+            Download SVG
+          </Button>
+          <Button
+            onClick={printSVG.bind(null, svgOutput)}
+            className="gap-2"
+            disabled={!svgOutput}>
+            <Printer className="h-4 w-4" />
+            Print SVG
+          </Button>
+        </div>
+
+        {svgOutput && (
+          <Card>
+            <CardContent className="p-6">
+              <div
+                className="w-full overflow-auto bg-white dark:bg-gray-800 rounded-lg"
+                dangerouslySetInnerHTML={{ __html: svgOutput }}
+              />
+            </CardContent>
+          </Card>
+        )}
+
 
         <Card>
           <Tabs defaultValue="visual" onValueChange={handleTabChange}>
@@ -205,45 +245,6 @@ const MossPoleGenerator = () => {
             </CardContent>
           </Tabs>
         </Card>
-
-        {svgOutput && (
-          <Card>
-            <CardContent className="p-6">
-              <div
-                className="w-full overflow-auto bg-white dark:bg-gray-800 rounded-lg"
-                dangerouslySetInnerHTML={{ __html: svgOutput }}
-              />
-            </CardContent>
-          </Card>
-        )}
-
-        <div className="flex justify-end gap-4">
-          <Button
-            variant="outline"
-            onClick={handleRegenerate}
-            className="gap-2"
-            disabled={!isValid || visualEditorHasError}
-          >
-            <RefreshCw className="h-4 w-4" />
-            Regenerate
-          </Button>
-          <Button
-            onClick={downloadSVG.bind(null, svgOutput)}
-            className="gap-2"
-            disabled={!svgOutput}
-          >
-            <Download className="h-4 w-4" />
-            Download SVG
-          </Button>
-          <Button
-            onClick={printSVG.bind(null, svgOutput)}
-            className="gap-2"
-            disabled={!svgOutput}
-          >
-            <Printer className="h-4 w-4" />
-            Print SVG
-          </Button>
-        </div>
       </div>
     </main>
   );

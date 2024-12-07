@@ -2,7 +2,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Config } from "@/lib/types";
 import { CollapsibleSection } from './CollapsibleSection';
-import { ColorInput } from "./colorInput";
+import { ColorInput } from "./ColorInput";
 
 interface VisualSettingsProps {
     config: Config;
@@ -16,7 +16,7 @@ export const VisualSettings = ({
     validationErrors
 }: VisualSettingsProps) => {
     return (
-        <CollapsibleSection title="Visual Settings" >
+        <CollapsibleSection border title="Visual Settings" >
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4" >
                 <ColorInput
                     label="Background Color"

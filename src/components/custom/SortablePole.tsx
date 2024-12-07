@@ -57,7 +57,7 @@ export const SortablePole = ({
                 >
                     <GripHorizontal className="h-4 w-4 text-muted-foreground" />
                 </button>
-                <CollapsibleSection title={`${pole.name} (Pole ${index + 1})`}>
+                <CollapsibleSection border={false} title={`${pole.name} (Pole ${index + 1})`}>
                     <div className="space-y-4">
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                             <div className="space-y-1">
